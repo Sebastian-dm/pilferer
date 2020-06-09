@@ -2,7 +2,7 @@
 A basic roguelike game developed with Python and TCOD
 
 <p align="center">
-  <img align="center" src="https://github.com/Sebastian-dm/pilferer/blob/master/assets/screenshot.png?raw=true">
+  <img src="https://github.com/Sebastian-dm/pilferer/blob/master/assets/screenshot.png?raw=true">
 </p>
 
 # Installation
