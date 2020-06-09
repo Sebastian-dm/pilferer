@@ -3,25 +3,36 @@ import tcod
 from input_handlers import handle_keys
 from render_functions import clear_all, render_all
 from entity import Entity
+from map_objects.game_map import GameMap
 
-FONT = 'assets/arial10x10.png'
-SCREEN_WIDTH = 80
-SCREEN_HEIGHT = 50
 VERSION = "0.0.1"
+FONT = 'assets/arial10x10.png'
+screen_width = 80
+screen_height = 50
+map_width = 80
+map_height = 45
+colors = {
+        'dark_wall': tcod.Color(0, 0, 100),
+        'dark_ground': tcod.Color(50, 50, 150)
+    }
+
 
 def main():
     """ Main game function """
 
-    player = Entity(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 2), '@', tcod.white)
-    npc = Entity(int(SCREEN_WIDTH / 2 - 5), int(SCREEN_HEIGHT / 2), '@', tcod.yellow)
+    player = Entity(int(screen_width / 2), int(screen_height / 2), '@', tcod.white)
+    npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), '@', tcod.yellow)
     entities = [npc, player]
 
     # Import font
     tcod.console_set_custom_font(FONT, tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
 
-    # Create screen
-    tcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'Pilferer %s'%VERSION, False)
-    con = tcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
+    # Console initialization
+    tcod.console_init_root(screen_width, screen_height, 'Pilferer %s'%VERSION, False)
+    con = tcod.console_new(screen_width, screen_height)
+
+    # Mapping
+    game_map = GameMap(map_width, map_height)
 
     # Variables for holding input
     key = tcod.Key()
@@ -32,7 +43,7 @@ def main():
         tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS, key, mouse)
 
         # Draw
-        render_all(con, entities, SCREEN_WIDTH, SCREEN_HEIGHT)
+        render_all(con, entities, game_map, screen_width, screen_height, colors)
         tcod.console_flush()
         clear_all(con, entities)
 
@@ -40,16 +51,16 @@ def main():
         action = handle_keys(key)
 
         move = action.get('move')
-        exit = action.get('exit')
-        fullscreen = action.get('fullscreen')
-
         if move:
             dx, dy = move
-            player.move(dx, dy)
+            if not game_map.is_blocked(player.x + dx, player.y + dy):
+                player.move(dx, dy)
 
+        exit = action.get('exit')
         if exit:
             return True
 
+        fullscreen = action.get('fullscreen')
         if fullscreen:
             tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
 
