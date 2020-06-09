@@ -1,6 +1,8 @@
-import tcod as libtcod
+import tcod
 
 from input_handlers import handle_keys
+from render_functions import clear_all, render_all
+from entity import Entity
 
 FONT = 'assets/arial10x10.png'
 SCREEN_WIDTH = 80
@@ -10,29 +12,29 @@ VERSION = "0.0.1"
 def main():
     """ Main game function """
 
-    player_x = int(SCREEN_WIDTH / 2)
-    player_y = int(SCREEN_HEIGHT / 2)
+    player = Entity(int(SCREEN_WIDTH / 2), int(SCREEN_HEIGHT / 2), '@', tcod.white)
+    npc = Entity(int(SCREEN_WIDTH / 2 - 5), int(SCREEN_HEIGHT / 2), '@', tcod.yellow)
+    entities = [npc, player]
 
     # Import font
-    libtcod.console_set_custom_font(FONT, libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
+    tcod.console_set_custom_font(FONT, tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD)
 
     # Create screen
-    libtcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'Pilferer %s'%VERSION, False)
-    con = libtcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
+    tcod.console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, 'Pilferer %s'%VERSION, False)
+    con = tcod.console_new(SCREEN_WIDTH, SCREEN_HEIGHT)
 
     # Variables for holding input
-    key = libtcod.Key()
-    mouse = libtcod.Mouse()
+    key = tcod.Key()
+    mouse = tcod.Mouse()
 
     # Main game loop
-    while not libtcod.console_is_window_closed():
-        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
+    while not tcod.console_is_window_closed():
+        tcod.sys_check_for_event(tcod.EVENT_KEY_PRESS, key, mouse)
 
         # Draw
-        libtcod.console_set_default_foreground(con, libtcod.white)
-        libtcod.console_put_char(con, player_x, player_y, '@', libtcod.BKGND_NONE)
-        libtcod.console_blit(con, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0)
-        libtcod.console_flush()
+        render_all(con, entities, SCREEN_WIDTH, SCREEN_HEIGHT)
+        tcod.console_flush()
+        clear_all(con, entities)
 
         # Input handling
         action = handle_keys(key)
@@ -43,14 +45,13 @@ def main():
 
         if move:
             dx, dy = move
-            player_x += dx
-            player_y += dy
+            player.move(dx, dy)
 
         if exit:
             return True
 
         if fullscreen:
-            libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
+            tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
 
 
 if __name__ == '__main__':
