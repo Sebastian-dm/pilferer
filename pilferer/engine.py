@@ -11,7 +11,7 @@ from entity import Entity, get_blocking_entity_at_location
 from components.fighter import Fighter
 from death_functions import kill_monster, kill_player
 
-VERSION = "0.1"
+VERSION = "0.2"
 FONT = 'assets/arial10x10.png'
 screen_width = 80
 screen_height = 50
