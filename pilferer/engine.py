@@ -1,6 +1,7 @@
 import tcod
 
 from input_handlers import handle_keys
+from game_states import GameStates
 from render_functions import clear_all, render_all
 from entity import Entity, get_blocking_entity_at_location
 from map_objects.game_map import GameMap
@@ -53,6 +54,9 @@ def main():
     key = tcod.Key()
     mouse = tcod.Mouse()
 
+    # Game state
+    game_state = GameStates.PLAYERS_TURN
+
     # Main game loop
     while not tcod.console_is_window_closed():
         # FOV
@@ -70,7 +74,7 @@ def main():
         action = handle_keys(key)
 
         move = action.get('move')
-        if move:
+        if move and game_state == GameStates.PLAYERS_TURN:
             dx, dy = move
             destination_x = player.x + dx
             destination_y = player.y + dy
@@ -82,6 +86,7 @@ def main():
                     player.move(dx, dy)
 
                     fov_recompute = True
+                game_state = GameStates.ENEMY_TURN
 
         exit = action.get('exit')
         if exit:
@@ -90,6 +95,13 @@ def main():
         fullscreen = action.get('fullscreen')
         if fullscreen:
             tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
+        
+        if game_state == GameStates.ENEMY_TURN:
+            for entity in entities:
+                if entity != player:
+                    print('The ' + entity.name + ' ponders the meaning of its existence.')
+
+            game_state = GameStates.PLAYERS_TURN
 
 
 if __name__ == '__main__':
