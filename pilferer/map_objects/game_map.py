@@ -12,14 +12,6 @@ class GameMap:
     def initialize_tiles(self):
         # Fill whole map with wall tiles
         tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
-
-        tiles[30][22].blocked = True
-        tiles[30][22].block_sight = True
-        tiles[31][22].blocked = True
-        tiles[31][22].block_sight = True
-        tiles[32][22].blocked = True
-        tiles[32][22].block_sight = True
-
         return tiles
     
     def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player):
