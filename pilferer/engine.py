@@ -21,14 +21,14 @@ room_max_size = 10
 room_min_size = 6
 max_rooms = 30
 fov_algorithm = 0
-fov_light_walls = True
+fov_light_walls = False
 fov_radius = 10
 max_monsters_per_room = 3
 colors = {
     'dark_wall': tcod.Color(0, 0, 0),
     'light_wall': tcod.Color(120, 120, 80),
-    'dark_ground': tcod.Color(100, 100, 100),
-    'light_ground': tcod.Color(200, 200, 170)
+    'dark_ground': tcod.Color(150, 150, 150),
+    'light_ground': tcod.Color(200, 200, 150)
 }
 
 
